@@ -4,7 +4,7 @@ use std::net::SocketAddr;
 use std::sync::{Arc, LockResult, Mutex};
 use crate::packet::Process;
 use chat_shared::packet::assign::NameRequestPacket;
-use crate::threading::{SharedMap, SharedStream};
+use crate::threading::{Endpoint, SharedMap, SharedStream};
 
 pub enum NameError {
   NameTaken(String),
@@ -17,7 +17,7 @@ impl Process for NameRequestPacket {
   
   type ErrType = NameError;
   type ArgsType = (
-    SharedMap<String, SharedStream>,
+    SharedMap<String, Endpoint>,
     SharedMap<String, String>,
   );
 

@@ -6,8 +6,7 @@ use std::net::{SocketAddr, TcpStream};
 use std::ops::Range;
 use std::sync::{Arc, Mutex};
 use rand::{random, Rng};
-use rand::distr::uniform::SampleRange;
-use crate::threading::{SharedMap, SharedStream};
+use crate::threading::{Endpoint, SharedMap, SharedStream};
 
 pub const WORDS: [&str; 256] = [
   "escape", "divide", "poetry", "behalf", "trusts", "bikini", "barely", "deemed",
@@ -44,7 +43,7 @@ pub const WORDS: [&str; 256] = [
   "tested", "exempt", "naples", "moscow", "webcam", "speaks", "signed", "kelkoo",
 ];
 
-pub fn generate_unique_id(peer: Arc<Mutex<TcpStream>>, taken: SharedMap<String, SharedStream>) -> Result<String, String> {
+pub fn generate_unique_id(peer: Arc<Mutex<TcpStream>>, taken: SharedMap<String, Endpoint>) -> Result<String, String> {
   let mut taken = match taken.lock() {
     Ok(guard) => guard,
     Err(e) => return Err(e.to_string()),
@@ -55,7 +54,6 @@ pub fn generate_unique_id(peer: Arc<Mutex<TcpStream>>, taken: SharedMap<String, 
     id = generate_id();
   }
   
-  taken.insert(id.clone(), peer);
   return Ok(id);
 }
 

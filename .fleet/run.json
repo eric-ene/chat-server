@@ -1,0 +1,42 @@
+{
+    "configurations": [
+        {
+            "type": "command",
+            "name": "kill on server",
+            "program": "ssh",
+            "args": [
+                "home_server",
+                "docker kill chat3037-server; return 0"
+            ],
+        },
+        {
+            "type": "cargo",
+            "name": "build for server",
+            "cargoArgs": [
+                "build",
+                "--release",
+                "--target=x86_64-unknown-linux-musl"
+            ],
+        },
+        {
+            "type": "command",
+            "name": "build and transfer",
+            "program": "$PROJECT_DIR$/transfer.sh",
+            "dependsOn": [
+                "build for server",
+                "kill on server"
+            ],
+        },
+        {
+            "type": "command",
+            "name": "run on server",
+            "program": "ssh",
+            "args": [
+                "home_server",
+                "docker start -i chat3037-server"
+            ],
+            "dependsOn": [ "build and transfer" ],
+        }
+
+    ]
+}

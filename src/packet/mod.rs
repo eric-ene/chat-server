@@ -6,7 +6,7 @@ use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
 use crate::packet::handshake::HandshakeError;
 use crate::packet::handshake::HandshakeError::ServerError;
-use crate::threading::{SharedMap, SharedStream};
+use crate::threading::{Endpoint, SharedMap, SharedStream};
 
 pub trait Process {
   type OkType;
@@ -18,9 +18,9 @@ pub trait Process {
 
 pub fn validate_username(
   dst: String, 
-  ids: SharedMap<String, SharedStream>, 
+  ids: SharedMap<String, Endpoint>, 
   users: SharedMap<String, String>
-) -> Result<SharedStream, HandshakeError> {
+) -> Result<Endpoint, HandshakeError> {
   let mut users = match users.lock() {
     Ok(guard) => guard,
     Err(e) => {
